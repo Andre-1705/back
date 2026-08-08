@@ -1,15 +1,13 @@
 package ar.com.codo24101.dao;
 
 import java.util.ArrayList;
-
 import ar.com.codo24101.domain.Libro;
-import ar.com.codo24101.dto.LibroDto;
 
 public interface LibroDao {
 
-    public Libro getById(Long l);
+    public Libro getById(Long id);
 
-    public void create(LibroDto libroDto);
+    public void create(Libro libro);
 
     public ArrayList<Libro> findAll();
 

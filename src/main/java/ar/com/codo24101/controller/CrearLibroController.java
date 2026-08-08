@@ -31,7 +31,7 @@ public class CrearLibroController extends HttpServlet {
 
       LibroService service = new LibroService();
 
-      service.actualizar(libroDto);
+      service.crear(libroDto);
       
       resp.setStatus(HttpServletResponse.SC_CREATED);
     }

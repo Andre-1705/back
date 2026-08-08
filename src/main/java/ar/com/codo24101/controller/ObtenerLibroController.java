@@ -1,18 +1,32 @@
 package ar.com.codo24101.controller;
 
+import java.io.IOException;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import ar.com.codo24101.domain.Libro;
 import ar.com.codo24101.service.LibroService;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-public class ObtenerLibroController {
+@WebServlet("/ObtenerLibroController")
+public class ObtenerLibroController extends HttpServlet {
 
-    public static void main(String[] args) {
-        
-        Long id = 1L;
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+
+        String idParam = req.getParameter("id");
+        Long id = Long.parseLong(idParam);
 
         LibroService service = new LibroService();
-
         Libro libro = service.obtener(id);
 
-            System.out.println(libro);
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        resp.getWriter().print(new ObjectMapper().writeValueAsString(libro));
     }
 }
