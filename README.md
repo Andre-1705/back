@@ -1,73 +1,91 @@
-# Back - Libros on line
+# Backend (Java Servlets + MySQL)
 
-API REST de gestión de libros construida con Java Servlets, JDBC y MySQL.
+## Descripción
 
-## Tecnologías
+API RESTful para gestión de libros. Desplegada como WAR en Apache Tomcat 10.
 
-- Java 17 + Jakarta EE (Servlets)
-- Maven (gestión de dependencias)
-- MySQL (base de datos)
+### Tech Stack
+
+- Java 21 + Servlets (Jakarta EE)
+- MySQL 8.0
+- Maven (WAR packaging)
+- Apache Tomcat 10.1.57
 - Jackson (serialización JSON)
-- Tomcat 10+ (servidor)
 
-### Estructura del proyecto
+#### Estructura del Proyecto
 
 src/main/java/ar/com/codo24101/
-├── controller/ # Endpoints HTTP (Servlets)
-├── dao/        # Acceso a datos (JDBC + MySQL)
-├── domain/     # Entidades (Libro, Articulo)
-├── dto/        # Objetos de transferencia (LibroDto)
-├── filter/     # Filtros (CORS)
-└── service/    # Lógica de negocio
+├── controller/        # Servlets (endpoints)
+│   ├── ListarLibroController.java
+│   ├── CrearLibroController.java
+│   ├── ModificarLibroController.java
+│   ├── EliminarLibroController.java
+│   └── ObtenerLibroController.java
+├── domain/            # Entidades
+│   ├── Libro.java
+│   └── Articulo.java
+├── dao/               # Acceso a datos (JDBC)
+│   ├── LibroDao.java
+│   ├── LibroJdbcMysqlImpl.java
+│   └── AdministradorConnexiones.java
+├── service/           # Lógica de negocio
+│   ├── LibroService.java
+│   └── LibroServiceImpl.java
+└── filter/            # Filtros
+└── CorsFilter.java
 
-#### Endpoints
+##### Instalación y Ejecución
 
-| Método |               URL             |           Descripción          |
-|--------|-------------------------------|--------------------------------|
-| GET    |`/ListarLibroController`       | Listar todos los libros        |
-| GET    |`/ObtenerLibroController?id=1` | Obtener un libro por ID        |
-| POST   |`/CrearLibroController`        | Crear un libro (JSON body)     |
-| POST   |`/ModificarLibroController`    | Actualizar un libro (JSON body)|
-| DELETE |`/EliminarLibroController?id=1`| Eliminar un libro por ID       |
-
-> Ejemplo de JSON (crear/modificar)
-
-{
-  "titulo": "El Principito",
-  "autor": "Antoine de Saint-Exupéry",
-  "precio": 2500,
-  "img": "img/el_principito.jpg",
-  "isbn": "9781234567890"
-}
-
-> Setup
-
-- 1 Crear la base de datos en MySQL:
-
-```sql
-CREATE DATABASE IF NOT EXISTS libro;
-USE libro;
-
-CREATE TABLE libro (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    titulo VARCHAR(100) NOT NULL,
-    autor VARCHAR(100) NOT NULL,
-    precio BIGINT NOT NULL,
-    img VARCHAR(200),
-    isbn VARCHAR(20)
-);
-```
-
-- 2 Compilar con Maven:
+- 1 Base de datos
+mysql -u root -p
 
 ```bash
+CREATE DATABASE libro;
+USE libro;
+CREATE TABLE libro (id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                    titulo VARCHAR(100),
+                    autor VARCHAR(100),    
+                    precio BIGINT,    
+                    img VARCHAR(200),    
+                    isbn VARCHAR(50));
 
-mvn clean package
 ```
 
-- 3 Desplegar el WAR generado en target/ en Tomcat 10+.
-- 4 El servidor corre en [http://localhost:8080/]
+- 2 Compilar
+mvn clean package
 
-> Front-end
+- 3 Configurar Tomcat
 
-El front-end correspondiente está en el repositorio "PaginaWeb"
+Descargar Apache Tomcat 10+
+
+- 4 Desplegar
+
+``
+cp target/webapp.war /ruta/tomcat/webapps//ruta/tomcat/bin/startup.sh
+``
+
+###### Endpoints
+
+|Método|                 URL                 |       Descripción       |
+|------|-------------------------------------|-------------------------|
+|GET   | /webapp/ListarLibroController       | Listar todos los libros |
+|GET   | /webapp/ObtenerLibroController?id=1 | Obtener libro por ID    |
+|POST  | /webapp/CrearLibroController        | Crear un libro          |
+|PUT   | /webapp/ModificarLibroController    | Modificar un libro      |
+|DELETE| /webapp/EliminarLibroController?id=1| Eliminar un libro       |
+
+###### Integración con Frontend
+
+El frontend (PaginaWeb) consume esta API mediante fetch:
+
+const API_BASE = ['http://localhost:8081/webapp'];
+                  fetch(API_BASE + '/ListarLibroController')
+                  .then(res => res.json())
+                  .then(libros => renderizarLibros(libros));
+
+El CORS filter permite los orígenes del frontend (Live Server).
+
+> Notas
+
+El puerto de Tomcat debe coincidir con el API_BASE del frontend
+Ajustar usuario y contraseña en `AdministradorConnexiones.java
