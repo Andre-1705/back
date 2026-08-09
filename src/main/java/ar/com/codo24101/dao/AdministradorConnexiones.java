@@ -9,9 +9,9 @@ public class AdministradorConnexiones {
 
     public static Connection connectar(){
 
-        String url = "jdbc:mysql://localhost:3306/libro?serverTimeZone=UTC&usseSSL=false";
+        String url = "jdbc:mysql://localhost:3306/libro?serverTimeZone=UTC&useSSL=false";
         String user = "root";
-        String password = "";
+        String password = "root123";
         String driver = "com.mysql.cj.jdbc.Driver";
 
         Connection conn = null;

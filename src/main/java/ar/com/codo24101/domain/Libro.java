@@ -7,6 +7,7 @@ public class Libro extends Articulo {
 
     public Libro(Long id, String titulo, String autor, Long precio, String img, String isbn) {
         super(titulo, autor, precio, img);
+        this.id = id;
         this.isbn = isbn;
     }
 
